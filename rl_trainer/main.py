@@ -13,7 +13,6 @@ from torch.utils.tensorboard import SummaryWriter
 
 base_dir = str(Path(__file__).resolve().parent.parent)
 sys.path.append(base_dir)
-
 from collections import deque, namedtuple
 
 from env.chooseenv import make
@@ -21,7 +20,7 @@ from env.chooseenv import make
 from rl_trainer.algo.ppo import PPO
 from rl_trainer.algo.random import random_agent
 from rl_trainer.log_path import *
-
+from mizhi import *
 actions_map = {
     0: [-100, -30],
     1: [-100, -18],
@@ -177,7 +176,8 @@ def main(args):
             state = env.reset(args.shuffle_map)
             if args.render:
                 env.env_core.render()
-            obs_ctrl_agent = np.array(state[ctrl_agent_index]["obs"]).flatten()
+            obs_ctrl_agent = np.array(state[ctrl_agent_index]["obs"])
+            #obs_ctrl_agent = np.array(state[ctrl_agent_index]["obs"]).flatten()
             obs_oppo_agent = state[1 - ctrl_agent_index]["obs"]
 
             episode += 1
@@ -238,7 +238,8 @@ def main(args):
                     model.store_transition(trans)
 
                 obs_oppo_agent = next_obs_oppo_agent
-                obs_ctrl_agent = np.array(next_obs_ctrl_agent).flatten()
+                obs_ctrl_agent = np.array(next_obs_ctrl_agent)
+                #obs_ctrl_agent = np.array(next_obs_ctrl_agent).flatten()
                 if args.render:
                     env.env_core.render()
                 Gt += reward[ctrl_agent_index] if done else -1
@@ -259,7 +260,7 @@ def main(args):
                         ctrl_agent_index,
                         "; Episode Return: ",
                         Gt,
-                        "; win rate(controlled & opponent): ",
+                        "; win rate(coFntrolled & opponent): ",
                         "%.2f" % (sum(record_win) / len(record_win)),
                         "%.2f" % (sum(record_win_op) / len(record_win_op)),
                         "; Trained episode:",
@@ -283,4 +284,6 @@ def main(args):
 
 if __name__ == "__main__":
     args = get_args()
+    sys.stdout = Printer('log_cnn/run%i/run.log'% (args.map))
+    sys.stderr = Errorer('log_cnn/run%i/run.error'% (args.map))
     main(args)

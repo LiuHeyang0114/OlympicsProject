@@ -1,0 +1,15 @@
+
+Begin to load model: 
+run_dir:  run3
+base_path:  /dssg/home/acct-stu/stu486/OlympicsProject/rl_trainer
+Actor path: /dssg/home/acct-stu/stu486/OlympicsProject/rl_trainer/models/olympics-running/ppo/run3/trained_model/actor_1500.pth
+Critic path: /dssg/home/acct-stu/stu486/OlympicsProject/rl_trainer/models/olympics-running/ppo/run3/trained_model/critic_1500.pth
+Model loaded!
+total reward:  [65.  0.]
+Result in map 3 within 20 episode:
++-------+--------+-----+
+| Name  | random | ppo |
++-------+--------+-----+
+| score |  65.0  | 0.0 |
+|  win  |  13.0  | 0.0 |
++-------+--------+-----+

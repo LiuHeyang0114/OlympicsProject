@@ -6,7 +6,7 @@ from env.chooseenv import make
 from tabulate import tabulate
 import argparse
 from rl_trainer.algo import *
-
+from mizhi import *
 
 actions_map = {
     0: [-100, -30],
@@ -133,12 +133,13 @@ if __name__ == "__main__":
         "--map",
         default="all",
     )
-    parser.add_argument("--render", type=bool, default=True)
-    parser.add_argument("--seed", default=100)
+    parser.add_argument("--render", type=bool, default=False)
+    parser.add_argument("--seed", default=0)
     args = parser.parse_args()
-
+    sys.stdout = Printer('log_cnn/%s/evaluate.log' % (args.my_ai_run_dir))
+    sys.stderr = Errorer('log_cnn/%s/evaluate.error' % (args.my_ai_run_dir))
     env_type = "olympics-running"
-    game = make(env_type, conf=None, seed=args.seed)
+    game = make(env_type, conf=None, seed=1)
 
     if args.map != "all":
         game.specify_a_map(int(args.map))
@@ -146,25 +147,20 @@ if __name__ == "__main__":
     else:
         shuffle = True
 
-    algo_list = [args.my_ai, args.opponent]  # your are controlling agent purple
-
+    algo_list = [args.opponent, args.my_ai]  # your are controlling agent green
     agent_list = []
-
-    if args.my_ai != "random":
-        agent = algo_map[args.my_ai]()
-        agent.load(args.my_ai_run_dir, int(args.my_ai_run_episode))
-        agent_list.append(agent)
-    else:
-        agent_list.append(random_agent(args.seed))
-
     if args.opponent != "random":
         agent = algo_map[args.opponent]()
         agent.load(args.opponent_run_dir, int(args.opponent_run_episode))
         agent_list.append(agent)
     else:
-        agent_list.append(random_agent(args.seed))
-
-    # NOTE: [our ai, random]
+        agent_list.append(random_agent())
+    if args.my_ai != "random":
+        agent = algo_map[args.my_ai]()
+        agent.load(args.my_ai_run_dir, int(args.my_ai_run_episode))
+        agent_list.append(agent)
+    else:
+        agent_list.append(random_agent())
 
     run_game(
         game,

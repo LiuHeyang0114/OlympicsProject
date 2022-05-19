@@ -1,8 +1,7 @@
 import sys
 from os import path
 
-father_path = path.dirname(__file__)
-sys.path.append(str(father_path))
+
 from generator import create_scenario
 import argparse
 from agent import *

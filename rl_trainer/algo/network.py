@@ -51,7 +51,9 @@ class Critic(nn.Module):
     def forward(self, x):
         if self.is_cnn:
             x = self.encoder(x)
-        x = F.relu(self.linear_in(x))
+        print(x.shape)
+        x = self.linear_in(x)
+        x = F.relu(x)
         value = self.state_value(x)
         return value
 
@@ -64,7 +66,7 @@ class CNN_Actor(nn.Module):
         # self.conv2 = nn.Conv2d(in_channels = 32, out_channels=64, kernel_size = 3, stride = 1)
         # self.flatten = nn.Flatten()
         self.net = Net = nn.Sequential(
-            nn.Conv2d(in_channels=8, out_channels=32, kernel_size=4, stride=2),
+            nn.Conv2d(in_channels=1, out_channels=32, kernel_size=4, stride=2),
             nn.BatchNorm2d(32),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(2),
@@ -86,11 +88,10 @@ class CNN_Actor(nn.Module):
 
 
 class CNN_Critic(nn.Module):
-    def __init__(self, state_space, hidden_size=64):
+    def __init__(self, state_space, hidden_size=64, cnn=False):
         super(CNN_Critic, self).__init__()
-
         self.net = Net = nn.Sequential(
-            nn.Conv2d(in_channels=8, out_channels=32, kernel_size=4, stride=2),
+            nn.Conv2d(in_channels=1, out_channels=32, kernel_size=4, stride=2),
             nn.BatchNorm2d(32),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(2),
@@ -109,7 +110,6 @@ class CNN_Critic(nn.Module):
         x = torch.relu(self.linear1(x))
         x = self.linear2(x)
         return x
-
 
 class CNN_CategoricalActor(nn.Module):
     def __init__(self, state_space, action_space, hidden_size=64):
