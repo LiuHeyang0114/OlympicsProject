@@ -6,7 +6,7 @@ from env.chooseenv import make
 from tabulate import tabulate
 import argparse
 from rl_trainer.algo import *
-
+from mizhi import *
 
 actions_map = {
     0: [-100, -30],
@@ -136,7 +136,8 @@ if __name__ == "__main__":
     parser.add_argument("--render", type=bool, default=False)
     parser.add_argument("--seed", default=0)
     args = parser.parse_args()
-
+    sys.stdout = Printer('log_cnn/%s/evaluate.log' % (args.my_ai_run_dir))
+    sys.stderr = Errorer('log_cnn/%s/evaluate.error' % (args.my_ai_run_dir))
     env_type = "olympics-running"
     game = make(env_type, conf=None, seed=1)
 
